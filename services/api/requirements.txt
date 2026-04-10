@@ -1,0 +1,46 @@
+# Web framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# Pydantic — must be >=2.8 for instructor
+pydantic>=2.8.0
+pydantic-settings>=2.2.0
+
+# AI / LLM — let pip resolve compatible versions
+anthropic
+langchain
+langchain-anthropic
+langchain-community
+langchain-core
+langgraph
+langsmith
+instructor
+
+# Databases
+neo4j==5.17.0
+asyncpg==0.29.0
+redis==5.0.1
+qdrant-client==1.7.3
+
+# External APIs
+plaid-python==16.0.0
+google-auth==2.28.0
+google-auth-oauthlib==1.2.0
+google-api-python-client==2.118.0
+
+# Utilities
+httpx
+python-dotenv==1.0.0
+python-multipart==0.0.9
+pillow>=10.0.0
+pandas>=2.0.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+
+# Voice (lightweight)
+gtts==2.5.1
+SpeechRecognition==3.10.1
+
+# Dev tools
+pytest==7.4.4
+ruff==0.2.1

@@ -252,6 +252,17 @@ class BaseAgent(ABC):
             "steps": [*state.get("steps", []), f"ERROR: {error}"],
         }
 
+    @staticmethod
+    def _complete(state: AgentState, output: dict[str, Any]) -> dict[str, Any]:
+        """Set the final output payload for the agent run.
+
+        Typically called in the last domain node before ``finalise``::
+
+            return {**self._complete(state, {"summary": "..."}),
+                    **self.add_step(state, "done")}
+        """
+        return {"output": {**state.get("output", {}), **output}}
+
     # ------------------------------------------------------------------
     # Execution
     # ------------------------------------------------------------------

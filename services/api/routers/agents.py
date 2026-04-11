@@ -42,6 +42,17 @@ class AlertSentinelRequest(AgentRunRequest):
     dismissed_types: list[str] = []
 
 
+class VoiceRequest(AgentRunRequest):
+    """Body for the voice orchestrator endpoint.
+
+    Either ``audio_base64`` or ``text_query`` must be provided.
+    """
+    audio_base64: str | None = None
+    text_query: str | None = None
+    audio_format: str = "wav"
+    voice_speed: float = 1.0
+
+
 class AgentRunResponse(BaseModel):
     """Envelope returned after an agent completes."""
     status: str
@@ -188,6 +199,33 @@ async def run_goal_tracker(body: AgentRunRequest) -> AgentRunResponse:
     Claude-generated summary.
     """
     return await _dispatch("goal_tracker", body)
+
+
+@router.post(
+    "/voice/run",
+    response_model=AgentRunResponse,
+)
+async def run_voice_orchestrator(body: VoiceRequest) -> AgentRunResponse:
+    """Execute the Voice Orchestrator agent for a given user.
+
+    Accepts either ``audio_base64`` (raw speech) or ``text_query`` (typed
+    input).  The agent transcribes, classifies intent, routes to the
+    appropriate data source or sub-agent, formulates a natural spoken
+    response, and returns synthesised audio.
+    """
+    if not body.audio_base64 and not body.text_query:
+        raise HTTPException(
+            status_code=422,
+            detail="Either audio_base64 or text_query must be provided",
+        )
+
+    input_data: dict[str, Any] = {"voice_speed": body.voice_speed}
+    if body.audio_base64:
+        input_data["audio_base64"] = body.audio_base64
+        input_data["audio_format"] = body.audio_format
+    if body.text_query:
+        input_data["text_query"] = body.text_query
+    return await _dispatch("voice_orchestrator", body, input_data=input_data)
 
 
 @router.post(

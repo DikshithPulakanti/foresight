@@ -120,6 +120,7 @@ from services.agents.goal_tracker.agent import GoalTrackerAgent  # noqa: E402
 from services.agents.receipt_scanner.agent import ReceiptScannerAgent  # noqa: E402
 from services.agents.subscription_auditor.agent import SubscriptionAuditorAgent  # noqa: E402
 from services.agents.transaction_monitor.agent import TransactionMonitorAgent  # noqa: E402
+from services.agents.voice_orchestrator.agent import VoiceOrchestratorAgent  # noqa: E402
 
 agent_orchestrator.register(AlertSentinelAgent())
 agent_orchestrator.register(BillNegotiatorAgent())
@@ -130,3 +131,4 @@ agent_orchestrator.register(GoalTrackerAgent())
 agent_orchestrator.register(ReceiptScannerAgent())
 agent_orchestrator.register(SubscriptionAuditorAgent())
 agent_orchestrator.register(TransactionMonitorAgent())
+agent_orchestrator.register(VoiceOrchestratorAgent())

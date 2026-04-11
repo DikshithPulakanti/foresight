@@ -1,5 +1,6 @@
 """Foresight AI agent package — LangGraph-based agents backed by MCP servers."""
 
+from services.agents.advisor.agent import AdvisorAgent
 from services.agents.alert_sentinel.agent import AlertSentinelAgent
 from services.agents.base_agent import AgentState, BaseAgent
 from services.agents.bill_negotiator.agent import BillNegotiatorAgent
@@ -15,6 +16,7 @@ from services.agents.transaction_monitor.agent import TransactionMonitorAgent
 from services.agents.voice_orchestrator.agent import VoiceOrchestratorAgent
 
 __all__ = [
+    "AdvisorAgent",
     "AlertSentinelAgent",
     "AgentState",
     "BaseAgent",

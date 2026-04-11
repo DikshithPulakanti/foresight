@@ -82,6 +82,22 @@ async def agent_status() -> dict[str, Any]:
 
 
 @router.post(
+    "/advisor/run",
+    response_model=AgentRunResponse,
+)
+async def run_advisor(body: AgentRunRequest) -> AgentRunResponse:
+    """Execute the Advisor agent for a given user.
+
+    Runs four specialist agents in parallel (transaction monitor,
+    subscription auditor, cashflow prophet, goal tracker), synthesises
+    their outputs into a weekly summary with a 0-100 health score,
+    writes a ~650-word briefing script optimised for spoken delivery,
+    converts it to audio, and returns the full briefing.
+    """
+    return await _dispatch("advisor", body)
+
+
+@router.post(
     "/alert-sentinel/run",
     response_model=AgentRunResponse,
 )

@@ -37,6 +37,11 @@ class ReceiptScannerRequest(AgentRunRequest):
     image_type: str | None = None
 
 
+class AlertSentinelRequest(AgentRunRequest):
+    """Body for the alert-sentinel endpoint (extends the base request)."""
+    dismissed_types: list[str] = []
+
+
 class AgentRunResponse(BaseModel):
     """Envelope returned after an agent completes."""
     status: str
@@ -57,6 +62,24 @@ async def agent_status() -> dict[str, Any]:
         "status": "ok",
         "agents": agent_orchestrator.list_agents(),
     }
+
+
+@router.post(
+    "/alert-sentinel/run",
+    response_model=AgentRunResponse,
+)
+async def run_alert_sentinel(body: AlertSentinelRequest) -> AgentRunResponse:
+    """Execute the Alert Sentinel agent for a given user.
+
+    Collects all pending alerts from Neo4j and Postgres, scores them on a
+    0-100 urgency scale, deduplicates within a 6-hour window, selects up
+    to 3 push notifications per run (critical alerts always bypass the
+    budget), and returns push-ready payloads.
+    """
+    input_data: dict[str, Any] = {}
+    if body.dismissed_types:
+        input_data["dismissed_types"] = body.dismissed_types
+    return await _dispatch("alert_sentinel", body, input_data=input_data)
 
 
 @router.post(

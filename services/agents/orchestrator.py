@@ -111,6 +111,7 @@ agent_orchestrator = AgentOrchestrator()
 """Module-level singleton — import this, never instantiate directly."""
 
 # Register every shipped agent on first import.
+from services.agents.alert_sentinel.agent import AlertSentinelAgent  # noqa: E402
 from services.agents.bill_negotiator.agent import BillNegotiatorAgent  # noqa: E402
 from services.agents.calendar_planner.agent import CalendarPlannerAgent  # noqa: E402
 from services.agents.cashflow_prophet.agent import CashflowProphetAgent  # noqa: E402
@@ -120,6 +121,7 @@ from services.agents.receipt_scanner.agent import ReceiptScannerAgent  # noqa: E
 from services.agents.subscription_auditor.agent import SubscriptionAuditorAgent  # noqa: E402
 from services.agents.transaction_monitor.agent import TransactionMonitorAgent  # noqa: E402
 
+agent_orchestrator.register(AlertSentinelAgent())
 agent_orchestrator.register(BillNegotiatorAgent())
 agent_orchestrator.register(CalendarPlannerAgent())
 agent_orchestrator.register(CashflowProphetAgent())

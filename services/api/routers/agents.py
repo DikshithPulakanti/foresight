@@ -72,6 +72,20 @@ async def run_subscription_auditor(body: AgentRunRequest) -> AgentRunResponse:
     return await _dispatch("subscription_auditor", body)
 
 
+@router.post(
+    "/bill-negotiator/run",
+    response_model=AgentRunResponse,
+)
+async def run_bill_negotiator(body: AgentRunRequest) -> AgentRunResponse:
+    """Execute the Bill Negotiator agent for a given user.
+
+    Identifies bills the user is overpaying for (internet, phone, insurance,
+    cable), researches competitor pricing, and returns ready-to-use phone
+    negotiation scripts with estimated savings.
+    """
+    return await _dispatch("bill_negotiator", body)
+
+
 # ------------------------------------------------------------------
 # Internal helpers
 # ------------------------------------------------------------------

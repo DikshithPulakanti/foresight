@@ -115,6 +115,7 @@ from services.agents.alert_sentinel.agent import AlertSentinelAgent  # noqa: E40
 from services.agents.bill_negotiator.agent import BillNegotiatorAgent  # noqa: E402
 from services.agents.calendar_planner.agent import CalendarPlannerAgent  # noqa: E402
 from services.agents.cashflow_prophet.agent import CashflowProphetAgent  # noqa: E402
+from services.agents.document_analyst.agent import DocumentAnalystAgent  # noqa: E402
 from services.agents.email_monitor.agent import EmailMonitorAgent  # noqa: E402
 from services.agents.goal_tracker.agent import GoalTrackerAgent  # noqa: E402
 from services.agents.receipt_scanner.agent import ReceiptScannerAgent  # noqa: E402
@@ -126,6 +127,7 @@ agent_orchestrator.register(AlertSentinelAgent())
 agent_orchestrator.register(BillNegotiatorAgent())
 agent_orchestrator.register(CalendarPlannerAgent())
 agent_orchestrator.register(CashflowProphetAgent())
+agent_orchestrator.register(DocumentAnalystAgent())
 agent_orchestrator.register(EmailMonitorAgent())
 agent_orchestrator.register(GoalTrackerAgent())
 agent_orchestrator.register(ReceiptScannerAgent())

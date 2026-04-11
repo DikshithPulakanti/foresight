@@ -37,6 +37,12 @@ class ReceiptScannerRequest(AgentRunRequest):
     image_type: str | None = None
 
 
+class DocumentAnalystRequest(AgentRunRequest):
+    """Body for the document-analyst endpoint (extends the base request)."""
+    image_base64: str
+    document_type: str | None = None
+
+
 class AlertSentinelRequest(AgentRunRequest):
     """Body for the alert-sentinel endpoint (extends the base request)."""
     dismissed_types: list[str] = []
@@ -91,6 +97,25 @@ async def run_alert_sentinel(body: AlertSentinelRequest) -> AgentRunResponse:
     if body.dismissed_types:
         input_data["dismissed_types"] = body.dismissed_types
     return await _dispatch("alert_sentinel", body, input_data=input_data)
+
+
+@router.post(
+    "/document-analyst/run",
+    response_model=AgentRunResponse,
+)
+async def run_document_analyst(body: DocumentAnalystRequest) -> AgentRunResponse:
+    """Execute the Document Analyst agent for a given user.
+
+    Accepts a base64-encoded document image (lease, insurance policy,
+    credit-card agreement, medical bill, etc.), classifies it, extracts
+    structured data via Vision MCP, runs a document-type-specific deep
+    risk analysis, creates alerts and calendar reminders, and returns a
+    plain-English summary.
+    """
+    input_data: dict[str, Any] = {"image_base64": body.image_base64}
+    if body.document_type is not None:
+        input_data["document_type"] = body.document_type
+    return await _dispatch("document_analyst", body, input_data=input_data)
 
 
 @router.post(

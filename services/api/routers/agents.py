@@ -55,9 +55,32 @@ async def run_transaction_monitor(body: AgentRunRequest) -> AgentRunResponse:
     creates alerts in the knowledge graph, and returns a Claude-generated
     summary.
     """
+    return await _dispatch("transaction_monitor", body)
+
+
+@router.post(
+    "/subscription-auditor/run",
+    response_model=AgentRunResponse,
+)
+async def run_subscription_auditor(body: AgentRunRequest) -> AgentRunResponse:
+    """Execute the Subscription Auditor agent for a given user.
+
+    Cross-references recurring bank charges (Plaid) with inbox receipts
+    (Gmail), deduplicates via fuzzy matching, and returns a unified
+    subscription inventory with cancellation/savings opportunities.
+    """
+    return await _dispatch("subscription_auditor", body)
+
+
+# ------------------------------------------------------------------
+# Internal helpers
+# ------------------------------------------------------------------
+
+async def _dispatch(agent_name: str, body: AgentRunRequest) -> AgentRunResponse:
+    """Run an agent by name and wrap the result in ``AgentRunResponse``."""
     try:
         result = await agent_orchestrator.run_agent(
-            "transaction_monitor",
+            agent_name,
             user_id=body.user_id,
             input_data={},
         )

@@ -112,5 +112,7 @@ agent_orchestrator = AgentOrchestrator()
 
 # Register every shipped agent on first import.
 from services.agents.transaction_monitor.agent import TransactionMonitorAgent  # noqa: E402
+from services.agents.subscription_auditor.agent import SubscriptionAuditorAgent  # noqa: E402
 
 agent_orchestrator.register(TransactionMonitorAgent())
+agent_orchestrator.register(SubscriptionAuditorAgent())

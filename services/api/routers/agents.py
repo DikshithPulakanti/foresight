@@ -153,6 +153,21 @@ async def run_email_monitor(body: EmailMonitorRequest) -> AgentRunResponse:
 
 
 @router.post(
+    "/goal-tracker/run",
+    response_model=AgentRunResponse,
+)
+async def run_goal_tracker(body: AgentRunRequest) -> AgentRunResponse:
+    """Execute the Goal Tracker agent for a given user.
+
+    Fetches savings goals from the knowledge graph, calculates whether the
+    user is on track for each one, generates spending-adjustment
+    recommendations for goals that are behind, and returns an encouraging
+    Claude-generated summary.
+    """
+    return await _dispatch("goal_tracker", body)
+
+
+@router.post(
     "/receipt-scanner/run",
     response_model=AgentRunResponse,
 )

@@ -86,6 +86,20 @@ async def run_bill_negotiator(body: AgentRunRequest) -> AgentRunResponse:
     return await _dispatch("bill_negotiator", body)
 
 
+@router.post(
+    "/cashflow-prophet/run",
+    response_model=AgentRunResponse,
+)
+async def run_cashflow_prophet(body: AgentRunRequest) -> AgentRunResponse:
+    """Execute the Cashflow Prophet agent for a given user.
+
+    Predicts bank balance 30 and 60 days out using time-series forecasting
+    across historical cashflow, recurring charges, payday schedule, and
+    calendar events.  Fires proactive alerts when a shortfall is projected.
+    """
+    return await _dispatch("cashflow_prophet", body)
+
+
 # ------------------------------------------------------------------
 # Internal helpers
 # ------------------------------------------------------------------

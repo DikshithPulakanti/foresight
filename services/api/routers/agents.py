@@ -21,6 +21,11 @@ class AgentRunRequest(BaseModel):
     user_id: str
 
 
+class EmailMonitorRequest(AgentRunRequest):
+    """Body for the email-monitor endpoint (extends the base request)."""
+    days_back: int = 7
+
+
 class ReceiptScannerRequest(AgentRunRequest):
     """Body for the receipt-scanner endpoint (extends the base request)."""
     image_base64: str
@@ -104,6 +109,24 @@ async def run_cashflow_prophet(body: AgentRunRequest) -> AgentRunResponse:
     calendar events.  Fires proactive alerts when a shortfall is projected.
     """
     return await _dispatch("cashflow_prophet", body)
+
+
+@router.post(
+    "/email-monitor/run",
+    response_model=AgentRunResponse,
+)
+async def run_email_monitor(body: EmailMonitorRequest) -> AgentRunResponse:
+    """Execute the Email Monitor agent for a given user.
+
+    Scans Gmail for financial signals (bills due, renewals, price increases,
+    overdue notices), classifies urgency, extracts action items, creates
+    knowledge-graph alerts, and returns a concise digest.
+    """
+    return await _dispatch(
+        "email_monitor",
+        body,
+        input_data={"days_back": body.days_back},
+    )
 
 
 @router.post(

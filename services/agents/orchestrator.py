@@ -113,12 +113,14 @@ agent_orchestrator = AgentOrchestrator()
 # Register every shipped agent on first import.
 from services.agents.bill_negotiator.agent import BillNegotiatorAgent  # noqa: E402
 from services.agents.cashflow_prophet.agent import CashflowProphetAgent  # noqa: E402
+from services.agents.email_monitor.agent import EmailMonitorAgent  # noqa: E402
 from services.agents.receipt_scanner.agent import ReceiptScannerAgent  # noqa: E402
 from services.agents.subscription_auditor.agent import SubscriptionAuditorAgent  # noqa: E402
 from services.agents.transaction_monitor.agent import TransactionMonitorAgent  # noqa: E402
 
 agent_orchestrator.register(BillNegotiatorAgent())
 agent_orchestrator.register(CashflowProphetAgent())
+agent_orchestrator.register(EmailMonitorAgent())
 agent_orchestrator.register(ReceiptScannerAgent())
 agent_orchestrator.register(SubscriptionAuditorAgent())
 agent_orchestrator.register(TransactionMonitorAgent())

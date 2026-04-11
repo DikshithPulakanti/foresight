@@ -1,0 +1,8 @@
+# Foresight — Prod Environment Variables (example)
+# Copy to terraform.tfvars and fill in real values.
+# NEVER commit terraform.tfvars to version control.
+
+db_password          = "STRONG-RANDOM-PASSWORD-HERE"
+neo4j_uri            = "bolt://your-prod-neo4j:7687"
+anthropic_secret_arn = "arn:aws:secretsmanager:us-east-1:ACCOUNT:secret:anthropic-key-prod"
+plaid_secret_arn     = "arn:aws:secretsmanager:us-east-1:ACCOUNT:secret:plaid-key-prod"

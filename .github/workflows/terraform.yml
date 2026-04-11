@@ -11,8 +11,8 @@ on:
       - "infrastructure/**"
 
 jobs:
-  terraform-validate:
-    name: Validate Terraform
+  terraform-plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,11 +21,21 @@ jobs:
         with:
           terraform_version: "1.7.0"
 
-      - name: Terraform format check
-        run: terraform fmt -check -recursive infrastructure/ || true
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive infrastructure/
 
-      - name: Terraform validate (dev)
+      - name: Terraform Init (dev)
         working-directory: infrastructure/environments/dev
-        run: |
-          terraform init -backend=false || true
-          terraform validate || true
+        run: terraform init -backend=false
+
+      - name: Terraform Validate (dev)
+        working-directory: infrastructure/environments/dev
+        run: terraform validate
+
+      - name: Terraform Init (prod)
+        working-directory: infrastructure/environments/prod
+        run: terraform init -backend=false
+
+      - name: Terraform Validate (prod)
+        working-directory: infrastructure/environments/prod
+        run: terraform validate

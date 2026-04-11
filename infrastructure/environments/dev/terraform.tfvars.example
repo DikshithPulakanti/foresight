@@ -1,0 +1,8 @@
+# Foresight — Dev Environment Variables (example)
+# Copy to terraform.tfvars and fill in real values.
+# NEVER commit terraform.tfvars to version control.
+
+db_password          = "change-me-in-prod"
+neo4j_uri            = "bolt://your-neo4j:7687"
+anthropic_secret_arn = "arn:aws:secretsmanager:us-east-1:ACCOUNT:secret:anthropic-key"
+plaid_secret_arn     = "arn:aws:secretsmanager:us-east-1:ACCOUNT:secret:plaid-key"

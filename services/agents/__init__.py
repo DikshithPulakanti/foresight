@@ -1,35 +1,37 @@
-"""Foresight AI agent package — LangGraph-based agents backed by MCP servers."""
+"""Foresight AI agent package — LangGraph-based agents backed by MCP servers.
 
-from services.agents.advisor.agent import AdvisorAgent
-from services.agents.alert_sentinel.agent import AlertSentinelAgent
+Concrete agent classes and the orchestrator are imported lazily to avoid
+circular imports (advisor → orchestrator → advisor).
+"""
+
 from services.agents.base_agent import AgentState, BaseAgent
-from services.agents.bill_negotiator.agent import BillNegotiatorAgent
-from services.agents.calendar_planner.agent import CalendarPlannerAgent
-from services.agents.cashflow_prophet.agent import CashflowProphetAgent
-from services.agents.document_analyst.agent import DocumentAnalystAgent
-from services.agents.email_monitor.agent import EmailMonitorAgent
-from services.agents.goal_tracker.agent import GoalTrackerAgent
-from services.agents.orchestrator import AgentOrchestrator, agent_orchestrator
-from services.agents.receipt_scanner.agent import ReceiptScannerAgent
-from services.agents.subscription_auditor.agent import SubscriptionAuditorAgent
-from services.agents.transaction_monitor.agent import TransactionMonitorAgent
-from services.agents.voice_orchestrator.agent import VoiceOrchestratorAgent
 
 __all__ = [
-    "AdvisorAgent",
-    "AlertSentinelAgent",
     "AgentState",
     "BaseAgent",
-    "BillNegotiatorAgent",
-    "CalendarPlannerAgent",
-    "CashflowProphetAgent",
-    "DocumentAnalystAgent",
-    "EmailMonitorAgent",
-    "GoalTrackerAgent",
-    "AgentOrchestrator",
-    "agent_orchestrator",
-    "ReceiptScannerAgent",
-    "SubscriptionAuditorAgent",
-    "TransactionMonitorAgent",
-    "VoiceOrchestratorAgent",
 ]
+
+
+def __getattr__(name: str):
+    """Lazy-import concrete agents and the orchestrator on first access."""
+    _lazy = {
+        "AdvisorAgent": "services.agents.advisor.agent",
+        "AlertSentinelAgent": "services.agents.alert_sentinel.agent",
+        "BillNegotiatorAgent": "services.agents.bill_negotiator.agent",
+        "CalendarPlannerAgent": "services.agents.calendar_planner.agent",
+        "CashflowProphetAgent": "services.agents.cashflow_prophet.agent",
+        "DocumentAnalystAgent": "services.agents.document_analyst.agent",
+        "EmailMonitorAgent": "services.agents.email_monitor.agent",
+        "GoalTrackerAgent": "services.agents.goal_tracker.agent",
+        "ReceiptScannerAgent": "services.agents.receipt_scanner.agent",
+        "SubscriptionAuditorAgent": "services.agents.subscription_auditor.agent",
+        "TransactionMonitorAgent": "services.agents.transaction_monitor.agent",
+        "VoiceOrchestratorAgent": "services.agents.voice_orchestrator.agent",
+        "AgentOrchestrator": "services.agents.orchestrator",
+        "agent_orchestrator": "services.agents.orchestrator",
+    }
+    if name in _lazy:
+        import importlib
+        mod = importlib.import_module(_lazy[name])
+        return getattr(mod, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

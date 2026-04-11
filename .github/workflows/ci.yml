@@ -33,11 +33,15 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install pytest
-        run: pip install pytest
+      - name: Install test dependencies
+        run: |
+          pip install pytest pytest-asyncio httpx fastapi
+          pip install -r services/api/requirements.txt
 
       - name: Run tests
-        run: pytest tests/ --tb=short -q || true
+        env:
+          PYTHONPATH: "services/mcp-servers:services/api:services:."
+        run: pytest tests/ --tb=short -q
 
   docker-validate:
     name: Validate docker-compose

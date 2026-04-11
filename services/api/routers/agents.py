@@ -21,6 +21,12 @@ class AgentRunRequest(BaseModel):
     user_id: str
 
 
+class ReceiptScannerRequest(AgentRunRequest):
+    """Body for the receipt-scanner endpoint (extends the base request)."""
+    image_base64: str
+    image_type: str | None = None
+
+
 class AgentRunResponse(BaseModel):
     """Envelope returned after an agent completes."""
     status: str
@@ -100,17 +106,39 @@ async def run_cashflow_prophet(body: AgentRunRequest) -> AgentRunResponse:
     return await _dispatch("cashflow_prophet", body)
 
 
+@router.post(
+    "/receipt-scanner/run",
+    response_model=AgentRunResponse,
+)
+async def run_receipt_scanner(body: ReceiptScannerRequest) -> AgentRunResponse:
+    """Execute the Receipt Scanner agent for a given user.
+
+    Accepts a base64-encoded receipt photo, extracts merchant/items/total
+    via Claude Vision, categorises the expense, stores it in the knowledge
+    graph, and returns a confirmation message.
+    """
+    input_data: dict[str, Any] = {"image_base64": body.image_base64}
+    if body.image_type is not None:
+        input_data["image_type"] = body.image_type
+    return await _dispatch("receipt_scanner", body, input_data=input_data)
+
+
 # ------------------------------------------------------------------
 # Internal helpers
 # ------------------------------------------------------------------
 
-async def _dispatch(agent_name: str, body: AgentRunRequest) -> AgentRunResponse:
+async def _dispatch(
+    agent_name: str,
+    body: AgentRunRequest,
+    *,
+    input_data: dict[str, Any] | None = None,
+) -> AgentRunResponse:
     """Run an agent by name and wrap the result in ``AgentRunResponse``."""
     try:
         result = await agent_orchestrator.run_agent(
             agent_name,
             user_id=body.user_id,
-            input_data={},
+            input_data=input_data or {},
         )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc

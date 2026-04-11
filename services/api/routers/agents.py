@@ -21,6 +21,11 @@ class AgentRunRequest(BaseModel):
     user_id: str
 
 
+class CalendarPlannerRequest(AgentRunRequest):
+    """Body for the calendar-planner endpoint (extends the base request)."""
+    days_ahead: int = 30
+
+
 class EmailMonitorRequest(AgentRunRequest):
     """Body for the email-monitor endpoint (extends the base request)."""
     days_back: int = 7
@@ -109,6 +114,24 @@ async def run_cashflow_prophet(body: AgentRunRequest) -> AgentRunResponse:
     calendar events.  Fires proactive alerts when a shortfall is projected.
     """
     return await _dispatch("cashflow_prophet", body)
+
+
+@router.post(
+    "/calendar-planner/run",
+    response_model=AgentRunResponse,
+)
+async def run_calendar_planner(body: CalendarPlannerRequest) -> AgentRunResponse:
+    """Execute the Calendar Planner agent for a given user.
+
+    Looks ahead at upcoming calendar events, estimates their cost (using
+    Claude when no amount is known), checks whether the budget can absorb
+    each expense, and creates proactive calendar reminders for at-risk items.
+    """
+    return await _dispatch(
+        "calendar_planner",
+        body,
+        input_data={"days_ahead": body.days_ahead},
+    )
 
 
 @router.post(

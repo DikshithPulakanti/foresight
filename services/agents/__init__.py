@@ -2,6 +2,7 @@
 
 from services.agents.base_agent import AgentState, BaseAgent
 from services.agents.bill_negotiator.agent import BillNegotiatorAgent
+from services.agents.calendar_planner.agent import CalendarPlannerAgent
 from services.agents.cashflow_prophet.agent import CashflowProphetAgent
 from services.agents.email_monitor.agent import EmailMonitorAgent
 from services.agents.orchestrator import AgentOrchestrator, agent_orchestrator
@@ -13,6 +14,7 @@ __all__ = [
     "AgentState",
     "BaseAgent",
     "BillNegotiatorAgent",
+    "CalendarPlannerAgent",
     "CashflowProphetAgent",
     "EmailMonitorAgent",
     "AgentOrchestrator",

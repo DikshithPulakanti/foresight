@@ -124,21 +124,32 @@ class TrainingConfig:
 
 
 def _check_deps() -> None:
-    missing: list[str] = []
-    if np is None:
-        missing.append("numpy")
-    if torch is None:
+    missing = []
+    try:
+        import torch
+    except ImportError:
         missing.append("torch")
-    if Dataset is None:
-        missing.append("datasets")
-    if AutoTokenizer is None:
+    try:
+        import transformers
+    except ImportError:
         missing.append("transformers")
-    if accuracy_score is None:
+    try:
+        import datasets
+    except ImportError:
+        missing.append("datasets")
+    try:
+        import sklearn
+    except ImportError:
         missing.append("scikit-learn")
+    try:
+        import accelerate
+    except ImportError:
+        missing.append("accelerate")
+
     if missing:
         raise RuntimeError(
             f"Missing required packages: {', '.join(missing)}. "
-            "Install with: pip install -r ml/training/requirements_ml.txt"
+            f"Install with: pip install -r ml/training/requirements_ml.txt"
         )
 
 
@@ -232,8 +243,12 @@ def tokenize_dataset(
             max_length=config.max_length,
         )
 
-    cols_to_remove = [c for c in dataset["train"].column_names if c not in ("label",)]
-    tokenized = dataset.map(tokenize_fn, batched=True, remove_columns=cols_to_remove)
+    tokenized = DatasetDict({
+        split: dataset[split].map(tokenize_fn, batched=True,
+            remove_columns=[c for c in dataset[split].column_names
+                           if c not in ["input_ids", "attention_mask", "label"]])
+        for split in dataset
+    })
     tokenized.set_format("torch")
     return tokenized
 
@@ -294,6 +309,8 @@ def train(
 
     # ── Load tokenizer and model ─────────────────────────────────────────
     log.info("Loading tokenizer and model: %s", config.model_name)
+    from transformers import (AutoTokenizer, AutoModelForSequenceClassification,
+        TrainingArguments, Trainer, EarlyStoppingCallback)
     tokenizer = AutoTokenizer.from_pretrained(config.model_name)
     model = AutoModelForSequenceClassification.from_pretrained(
         config.model_name,

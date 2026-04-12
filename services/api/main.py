@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.insert(0, '/app')
+sys.path.insert(0, '/app/services')
+
 """Foresight API — Proactive AI financial operating system."""
 
 import logging

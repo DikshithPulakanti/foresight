@@ -42,7 +42,16 @@ from typing import Any, Optional
 from langgraph.graph import END, StateGraph
 from typing_extensions import TypedDict
 
-from mcp_servers.registry import mcp_registry
+try:
+    from mcp_servers.registry import mcp_registry
+except ImportError:
+    try:
+        from services.mcp_servers.registry import mcp_registry
+    except ImportError:
+        import sys, os
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'mcp-servers'))
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'mcp_servers'))
+        from registry import mcp_registry
 
 logger = logging.getLogger(__name__)
 

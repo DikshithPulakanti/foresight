@@ -191,7 +191,7 @@ def generate_variations(
     for attempt in range(1, max_retries + 1):
         try:
             response = client.messages.create(
-                model="claude-haiku-20240307",
+                model="claude-haiku-4-5",
                 max_tokens=1000,
                 messages=[{"role": "user", "content": prompt}],
             )

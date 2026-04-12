@@ -77,7 +77,9 @@ services:
       - foresight-network
 
   api:
-    build: ./services/api
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
     container_name: foresight-api
     restart: unless-stopped
     ports:
@@ -86,6 +88,8 @@ services:
       - .env
     volumes:
       - ./services/api:/app
+      - ./services/agents:/app/services/agents
+      - ./services/mcp-servers:/app/services/mcp-servers
     depends_on:
       neo4j:
         condition: service_healthy
